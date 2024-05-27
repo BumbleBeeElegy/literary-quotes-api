@@ -1,0 +1,17 @@
+# Dependencies
+/node_modules
+yarn.lock
+package-lock.json
+
+# Log files
+*.log
+
+# Node diagnostic reports
+report*.json
+
+# Local IDE files
+.vscode
+
+# Misc
+.DS_Store
+.sass-cache/
