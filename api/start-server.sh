@@ -1,2 +1,2 @@
 #!/bin/bash
-json-server -w library-quote_db-source.json
+json-server -w literary-quote_db-source.json
