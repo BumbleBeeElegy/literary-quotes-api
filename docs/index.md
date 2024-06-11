@@ -39,7 +39,9 @@ Get literary quotes from a curated public domain database built on Project Guten
     * [By publication date](placeholder-link)
     * [By length](placeholder-link)
     * [Using multiple query parameters](placeholder-link)
-* [Error handling](placeholder-link)
+* [Response codes and errors](placeholder-link)
+  * [HTTP status codes](placeholder-link)
+  * [Error messages](placeholder-link)
 * [Quick reference: Properties](placeholder-link)
 * [Quick reference: Search filters](placeholder-link)
 
