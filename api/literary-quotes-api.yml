@@ -1,0 +1,174 @@
+openapi: 3.1.0
+info:
+  title: Literary Quotes API
+  description: Get literary quotes from a curated public domain database built on Project Gutenberg and Wikisource.
+  version: 1.0.0
+servers:
+  - url: https://literary-quotes.com
+paths:
+  /api/v1/quotes:
+    get:
+      description: Retrieves literary quotes from a curated database. Search by author, work, genre, quote length, and more.
+      parameters:
+        - name: author
+          in: query
+          description: Search quotes by author
+          required: false
+          schema:
+            type: string
+        - name: work
+          in: query
+          description: Search quotes by published work
+          required: false
+          schema:
+            type: string
+        - name: year
+          in: query
+          description: Search quotes by the year the works were published.
+          required: false
+          schema:
+            type: string
+        - name: genre
+          in: query
+          description: Search quotes by genre
+          required: false
+          schema:
+            type: string
+        - name: length
+          in: query
+          description: Search quotes by length.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Page number for pagination.
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Number of results per page.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A Quote object or an array of Quote objects is returned upon successful retrieval of one or more literary quotes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quotes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Quote'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '400':
+          description: The request could not be understood and may have missing or incorrect content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                error: bad_request
+                description: Bad Request
+        '401':
+          description: Authentication failed because your username and/or password are missing or incorrect.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 401
+                error: unauthorized
+                description: Unauthorized
+        '403':
+          description: Authentication information is missing or invalid. You don't have permission to access the requested resource.
+          headers:
+            WW_Authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 403
+                error: forbidden
+                description: Forbidden
+        '404':
+          description: The specified quote was not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 404
+                error: not_found
+                description: Not Found
+        '500':
+          description: Returned on unexpected errors.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 500
+                error: internal_server_error
+                description: Internal Server Error
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    Quote:
+      type: object
+      properties:
+        id:
+          type: integer
+        author:
+          type: string
+        author_id:
+          type: integer
+        work:
+          type: string
+        work_id:
+          type: integer
+        genre:
+          type: string
+        publish_date:
+          type: string
+        quote_length:
+          type: integer
+        source:
+          type: string
+        quote:
+          type: string
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        total_pages:
+          type: integer
+        total_items:
+          type: integer
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The HTTP response code of the error.
+        error:
+          type: string
+          description: A machine parsable string that represents the code.
+        description:
+          type: string
+          description: A description of the error.
+    security:
+      - basicAuth: []
