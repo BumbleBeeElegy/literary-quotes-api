@@ -1,7 +1,5 @@
 # Quick Reference: Status codes
 
-### Status Codes
-
 | Status Code | Description                                          |
 |-------------|------------------------------------------------------|
 | 200 OK      | The request was successful                           |
