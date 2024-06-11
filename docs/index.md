@@ -30,7 +30,6 @@ Get literary quotes from a curated public domain database built on Project Guten
 * [Filter quotes using query parameters](placeholder-link)
 
 ## Reference
-
 * [Resources](placeholder-link)
   * [GET `quotes`](placeholder-link)
     * [By author](placeholder-link)
@@ -44,6 +43,7 @@ Get literary quotes from a curated public domain database built on Project Guten
   * [Error messages](placeholder-link)
 * [Quick reference: Properties](placeholder-link)
 * [Quick reference: Search filters](placeholder-link)
+* [Quick reference: Status codes](placeholder-link)
 
 ## Pricing & sales
 
