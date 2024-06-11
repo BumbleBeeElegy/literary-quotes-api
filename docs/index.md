@@ -2,7 +2,7 @@
 layout: page
 ---
 
-# Literary Quote API
+# Literary Quotes API
 
 Get literary quotes from a curated public domain database built on Project Gutenberg and Wikisource.
 
