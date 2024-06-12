@@ -38,12 +38,12 @@ Get literary quotes from a curated public domain database built on Project Guten
     * [By publication date](placeholder-link)
     * [By length](placeholder-link)
     * [Using multiple query parameters](placeholder-link)
+* [Code examples](placeholder-link)
 * [Response codes and errors](placeholder-link)
-  * [HTTP status codes](placeholder-link)
-  * [Error messages](placeholder-link)
-* [Quick reference: Properties](placeholder-link)
-* [Quick reference: Search filters](placeholder-link)
-* [Quick reference: Status codes](placeholder-link)
+* [Quick references](placeholder-link)
+  * [Object schemas](placeholder-link)
+  * [Search filters](placeholder-link)
+  * [Status codes](placeholder-link)
 
 ## Pricing & sales
 
