@@ -11,31 +11,9 @@ The `quotes` resource provides access to a curated database of literary quotes. 
 
 `https://literary-quotes.com/api/v1/quotes`
 
-## Path parameters
+## Resource properties
 
-No path parameters.
-
-## Query parameters
-
-Optional.
-<!--TODO: Determine if all query params should be included here or if it makes more sense to link to more info.-->
-
-## Requests
-
-### Request headers
-<!--TODO: Add info about basic auth and maybe Accept: application/json-->
-
-### Request body
-
-No request body.
-
-### Example request
-
-<!--TODO: Add example.-->
-
-## Responses
-
-### Example response
+### JSON example
 
 ```json
 {
@@ -51,8 +29,6 @@ No request body.
   "quote": "Life is a train of moods like a string of beads; and as we pass through them they prove to be many-colored lenses which paint the world their own hue, and each shows only what lies in its own focus."
 }
 ```
-
-<!--Note: Maybe add link to curl examples?-->
 
 ### Object schema
 
