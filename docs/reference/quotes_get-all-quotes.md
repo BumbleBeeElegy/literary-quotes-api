@@ -12,7 +12,7 @@ Fetch all quotes from the database. Supports pagination and sorting options.
 
 ## Query parameters
 
-<!--Question: Do the query parameters for quotes and pagination need to be here, or should this link to separate references for that, to avoid repetition on a large amount of material?00>
+<!--Question: Do the query parameters for quotes and pagination need to be here, or should this link to separate references for that, to avoid repetition on a large amount of material? Maybe appendices?-->
 <!--TODO: Do more research on parameter serialization and if that applies.-->
 
 Optional.
@@ -56,7 +56,13 @@ curl -X GET "https://literary-quotes.com/api/v1/quotes?page=1&limit=5&orderby=au
 
 ## Responses
 
-### Success response
+**`200`** Returns an array of Quotes objects.
+**`400`**
+**`401`**
+**`403`**
+**`404`**
+**`500`**
+
 
 A `200` response returns an array of Quotes objects that contain all the quotes in the database. For example:
 
@@ -86,6 +92,14 @@ A `200` response returns an array of Quotes objects that contain all the quotes 
   }
 }
 ```
+
+Example error response:
+
+{
+    status: 401,
+    message: "Unauthorized access"
+    description: "Authentication is required and has failed or has not yet been provided."
+}
 
 ### Return status
 
