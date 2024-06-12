@@ -30,14 +30,13 @@ Get literary quotes from a curated public domain database built on Project Guten
 * [Filter quotes using query parameters](placeholder-link)
 
 ## Reference
-* [Resources](placeholder-link)
-  * [GET `quotes`](placeholder-link)
-    * [By author](placeholder-link)
-    * [By work](placeholder-link)
-    * [By genre](placeholder-link)
-    * [By publication date](placeholder-link)
-    * [By length](placeholder-link)
-    * [Using multiple query parameters](placeholder-link)
+
+* [`quotes` resource](placeholder-link)
+  * [Get quotes by author](placeholder-link)
+  * [Get quotes by work](placeholder-link)
+  * [Get quotes by genre](placeholder-link)
+  * [Get quotes by publication date](placeholder-link)
+  * [Get quotes by length](placeholder-link)
 * [Code examples](placeholder-link)
 * [Response codes and errors](placeholder-link)
 * [Quick references](placeholder-link)
