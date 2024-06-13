@@ -32,6 +32,7 @@ Get literary quotes from a curated public domain database built on Project Guten
 ## Reference
 
 * [`quotes` resource](placeholder-link)
+  * [Get all quotes](placeholder-link)
   * [Get quotes by author](placeholder-link)
   * [Get quotes by work](placeholder-link)
   * [Get quotes by genre](placeholder-link)

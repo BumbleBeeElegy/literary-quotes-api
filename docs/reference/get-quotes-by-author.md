@@ -1,20 +1,20 @@
-# Get quotes by work
+# Get quotes by author
 
-Fetch quotes filtered by the literary work. Supports pagination and sorting options.
+Fetch quotes filtered by author. Supports pagination and sorting options.
 
 ## Method
 
-- **GET**
+**GET**
 
 ## URL
 
-`http://localhost:3000//api/v1/quotes?work={work}`
+`/api/v1/quotes?author={author}`
 
-## Query parameters
+#### Query parameters
 
 | Parameter | Type   | Required | Description                                                   |
 |-----------|--------|----------|---------------------------------------------------------------|
-| work      | string | Yes      | Title of the work to filter quotes by.                        |
+| author    | string | Yes      | Name of the author to filter quotes by.                       |
 | page      | int    | No       | Page number for pagination. Defaults to 1.                    |
 | limit     | int    | No       | Number of results per page. Defaults to 10.                   |
 | orderby   | string | No       | Attribute to order results by (e.g., author, work, genre).    |
@@ -36,34 +36,40 @@ Fetch quotes filtered by the literary work. Supports pagination and sorting opti
 
 ## Requests
 
-## Request headers
+### Request headers
 
 | Header Name      | Description                                    |
 |------------------|------------------------------------------------|
 | Authorization    | Basic base64-encoded username:password.        |
 
-## Request body
+<!--TODO: Include accept json header.-->
+
+### Request body
 
 The GET request doesn't include a body.
 
-## Example request
+### Example request
 
 ```bash
-curl -X GET "https://literary-quotes.com/api/v1/quotes?work=The%20Essays%20of%20Ralph%20Waldo%20Emerson&page=1&limit=5&orderby=author&sort=asc" -H "Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ="
+curl -X GET "https://literary-quotes.com/api/v1/quotes?author=Ralph%20Waldo%20Emerson&page=1&limit=5&orderby=work&sort=asc" -H "Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ="
 ```
 
 ## Response
 
-**`200`** Returns an array of Quotes objects.
+**`200`** Returns an array of Quote objects.
 **`400`**
 **`401`**
 **`403`**
 **`404`**
 **`500`**
 
-A `200` response returns a `quote` object or an array of `quote` objects that contain the quote(s) specified in the request.
+A `200` response returns a Quote object or an array of Quote objects that contain the quote(s) specified in the request.
+
+<!--TODO: Revisit YAML file. Maybe a QuoteItems/QuotesData object should be added if I'm wanting to return more than just the array of objects (like pagination info, etc.). Do some testing in Postman with different options.-->
 
 ### Example response
+
+<!--TODO: Vary the example responses. Add info about how to return specific fields instead of the entire quote object each time?-->
 
 ```json
 {

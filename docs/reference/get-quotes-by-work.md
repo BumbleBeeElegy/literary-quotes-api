@@ -1,6 +1,6 @@
-# Get quotes by genre
+# Get quotes by work
 
-Fetch quotes filtered by genre. Supports pagination and sorting options.
+Fetch quotes filtered by the literary work. Supports pagination and sorting options.
 
 ## Method
 
@@ -8,13 +8,13 @@ Fetch quotes filtered by genre. Supports pagination and sorting options.
 
 ## URL
 
-`/api/v1/quotes?genre={genre}`
+`http://localhost:3000//api/v1/quotes?work={work}`
 
 ## Query parameters
 
 | Parameter | Type   | Required | Description                                                   |
 |-----------|--------|----------|---------------------------------------------------------------|
-| genre     | string | Yes      | Genre to filter quotes by.                                    |
+| work      | string | Yes      | Title of the work to filter quotes by.                        |
 | page      | int    | No       | Page number for pagination. Defaults to 1.                    |
 | limit     | int    | No       | Number of results per page. Defaults to 10.                   |
 | orderby   | string | No       | Attribute to order results by (e.g., author, work, genre).    |
@@ -42,8 +42,6 @@ Fetch quotes filtered by genre. Supports pagination and sorting options.
 |------------------|------------------------------------------------|
 | Authorization    | Basic base64-encoded username:password.        |
 
-<!--TODO: Add the accept json header.-->
-
 ### Request body
 
 The GET request doesn't include a body.
@@ -51,7 +49,7 @@ The GET request doesn't include a body.
 ### Example request
 
 ```bash
-curl -X GET "https://literary-quotes.com/api/v1/quotes?genre=Essays&page=1&limit=5&orderby=author&sort=asc" -H "Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ="
+curl -X GET "https://literary-quotes.com/api/v1/quotes?work=The%20Essays%20of%20Ralph%20Waldo%20Emerson&page=1&limit=5&orderby=author&sort=asc" -H "Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ="
 ```
 
 ## Response
