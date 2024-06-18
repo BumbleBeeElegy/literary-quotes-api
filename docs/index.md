@@ -5,56 +5,57 @@ layout: page
 # Literary Quotes API
 
 > [!NOTE]
-> This repository contains documentation for a mock API that was created as part of an API documentation course. Learn how to [set up a testing environment](placeholder) to verify the content.
+> This repository contains documentation for a mock API that was created as part of an API documentation course. You can set up a [testing environment](placeholder) to verify the content.
 
-> [!NOTE]
-> Useful information that users should know, even when skimming content.
-
-Get literary quotes from a curated public domain database built on Project Gutenberg and Wikisource.
+Get literary quotes from a curated public domain database built on Project Gutenberg. and Wikisource.
 
 ## Getting started
 
-* [Prerequisites](placeholder-link)
-* [Quickstart](placeholder-link)
+* [Prerequisites]
+* [Quickstart]
 
 ## About the API
 
-* [Authentication](placeholder-link)
-* [Request methods](placeholder-link)
-* [Servers](placeholder-link)
-* [Endpoints](placeholder-link)
-* [Authorization](placeholder-link)
-* [Request headers](placeholder-link)
-* [Request bodies](placeholder-link)
-* [Pagination](placeholder-link)
-* [Rate limits](placeholder-link)
-* [Versioning](placeholder-link)
+* Requests
+  * [Endpoints]
+  * [Request methods]
+  * [Authorization]
+  * [Request headers]
+  * [Pagination]
+* [Responses]
+  * [Response bodies]
+  * [Rate limits]
+  * [Error handling]
 
 ## Tutorials
 
-* [Set up a testing environment](placeholder-link)
-* [Filter quotes using query parameters](placeholder-link)
+* [Set up a testing environment]
+* [Use query parameters for filtering, sorting, and pagination]
 
 ## Reference
 
-* [`quotes` resource](placeholder-link)
-  * [Get all quotes](placeholder-link)
-  * [Get quotes by author](placeholder-link)
-  * [Get quotes by work](placeholder-link)
-  * [Get quotes by genre](placeholder-link)
-  * [Get quotes by publication date](placeholder-link)
-  * [Get quotes by length](placeholder-link)
-* [Code examples](placeholder-link)
-* [Response codes and errors](placeholder-link)
-* [Quick references](placeholder-link)
-  * [Object schemas](placeholder-link)
-  * [Search filters](placeholder-link)
-  * [Status codes](placeholder-link)
+* [Resources]
+  * [GET /quotes]
+    * [By author]
+    * [By work]
+    * [By category]
+    * [By genre]
+    * [By publication date]
+    * [By length]
+    * [Using query parameters]
+  * [GET /quotes/random]
+    * [Using query parameters]
+* [cURL examples]
+* [Response codes and errors]
+* [Quick references]
+  * [Object schemas]
+  * [Query parameters]
+  * [Status codes]
 
 ## Pricing & sales
 
 Learn how you can use the Literary Quote API in your applications and find out more about the pricing model and how to get connected with the Sales team.
 
-* [Use cases](placeholder-link)
-* [Pricing](placeholder-link)
-* [Contact Sales](placeholder-link)
+* [Use cases]
+* [Pricing]
+* [Contact Sales]
