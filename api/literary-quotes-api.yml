@@ -1,174 +1,450 @@
 openapi: 3.1.0
 info:
   title: Literary Quotes API
-  description: Get literary quotes from a curated public domain database built on Project Gutenberg and Wikisource.
+  description: Access literary quotes from a curated public domain database. This API allows you to fetch quotes by various parameters, including author, work, and genre, with support for complex queries, sorting, and pagination.
   version: 1.0.0
+
 servers:
-  - url: https://literary-quotes.com
+  - url: http://localhost:3000
+
 paths:
-  /api/v1/quotes:
+  /quotes:
     get:
-      description: Retrieves literary quotes from a curated database. Search by author, work, genre, quote length, and more.
+      summary: Retrieve a list of quotes
+      description: Fetch a list of quotes from the curated database. Supports filtering, sorting, and pagination.
+      operationId: getQuotes
+      tags:
+        - quotes
       parameters:
-        - name: author
-          in: query
-          description: Search quotes by author
-          required: false
-          schema:
-            type: string
-        - name: work
-          in: query
-          description: Search quotes by published work
-          required: false
-          schema:
-            type: string
-        - name: year
-          in: query
-          description: Search quotes by the year the works were published.
-          required: false
-          schema:
-            type: string
-        - name: genre
-          in: query
-          description: Search quotes by genre
-          required: false
-          schema:
-            type: string
-        - name: length
-          in: query
-          description: Search quotes by length.
-          required: false
-          schema:
-            type: integer
-        - name: page
-          in: query
-          description: Page number for pagination.
-          required: false
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: Number of results per page.
-          required: false
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/AuthorParam'
+        - $ref: '#/components/parameters/AuthorContainsParam'
+        - $ref: '#/components/parameters/AuthorIdParam'
+        - $ref: '#/components/parameters/WorkParam'
+        - $ref: '#/components/parameters/WorkContainsParam'
+        - $ref: '#/components/parameters/WorkIdParam'
+        - $ref: '#/components/parameters/CategoryParam'
+        - $ref: '#/components/parameters/GenreParam'
+        - $ref: '#/components/parameters/PublishDateParam'
+        - $ref: '#/components/parameters/QuoteLengthParam'
+        - $ref: '#/components/parameters/QuoteLengthGteParam'
+        - $ref: '#/components/parameters/QuoteLengthLteParam'
+        - $ref: '#/components/parameters/SortParam'
+        - $ref: '#/components/parameters/OrderParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/OffsetParam'
       responses:
         '200':
-          description: A Quote object or an array of Quote objects is returned upon successful retrieval of one or more literary quotes.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  quotes:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Quote'
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/responses/QuotesResponse'
         '400':
-          description: The request could not be understood and may have missing or incorrect content.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                code: 400
-                error: bad_request
-                description: Bad Request
+          $ref: '#/components/responses/BadRequestError'
         '401':
-          description: Authentication failed because your username and/or password are missing or incorrect.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                code: 401
-                error: unauthorized
-                description: Unauthorized
-        '403':
-          description: Authentication information is missing or invalid. You don't have permission to access the requested resource.
-          headers:
-            WW_Authenticate:
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                code: 403
-                error: forbidden
-                description: Forbidden
+          $ref: '#/components/responses/UnauthorizedError'
         '404':
-          description: The specified quote was not found.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                code: 404
-                error: not_found
-                description: Not Found
+          $ref: '#/components/responses/NotFoundError'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsError'
         '500':
-          description: Returned on unexpected errors.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                code: 500
-                error: internal_server_error
-                description: Internal Server Error
+          $ref: '#/components/responses/InternalServerError'
+
+  /quotes/random:
+    get:
+      security:
+        - basicAuth: []
+      summary: Retrieve a random quote
+      description: Fetch a random quote from the curated database. Supports filtering by author ID, work ID, category, and genre.
+      operationId: getRandomQuote
+      tags:
+        - random
+      parameters:
+        - $ref: '#/components/parameters/AuthorIdParam'
+        - $ref: '#/components/parameters/WorkIdParam'
+        - $ref: '#/components/parameters/CategoryParam'
+        - $ref: '#/components/parameters/GenreParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/RandomQuoteResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
+
+  parameters:
+    AuthorParam:
+      name: author
+      in: query
+      description: Filter quotes by the author's name. Use for exact name matching.
+      required: false
+      schema:
+        type: string
+    AuthorContainsParam:
+      name: author_contains
+      in: query
+      description: Filter quotes by the author's name with partial matching. Supports searching by first name, last name, or both.
+      required: false
+      schema:
+        type: string
+    AuthorIdParam:
+      name: author_id
+      in: query
+      description: Filter quotes by the author's ID.
+      required: false
+      schema:
+        type: integer
+    WorkParam:
+      name: work
+      in: query
+      description: Filter quotes by the work's title. Use for exact title matching.
+      required: false
+      schema:
+        type: string
+    WorkContainsParam:
+      name: work_contains
+      in: query
+      description: Filter quotes by the work's title with partial matching. Supports searching by one or more words in the title.
+      required: false
+      schema:
+        type: string
+    WorkIdParam:
+      name: work_id
+      in: query
+      description: Filter quotes by the work's ID.
+      required: false
+      schema:
+        type: integer
+    CategoryParam:
+      name: category
+      in: query
+      description: Filter quotes by the work's category.
+      required: false
+      schema:
+        type: string
+        enum:
+          - Fiction
+          - Nonfiction
+    GenreParam:
+      name: genre
+      in: query
+      description: Filter quotes by the work's literary genre.
+      required: false
+      schema:
+        $ref: "#/components/schemas/Genres"
+    PublishDateParam:
+      name: publish_date
+      in: query
+      description: Filter quotes by publication date.
+      required: false
+      schema:
+        $ref: "#/components/schemas/PublishDate"
+    QuoteLengthParam:
+      name: quote_length
+      in: query
+      description: Filter quotes by an exact character length.
+      schema:
+        type: integer
+    QuoteLengthGteParam:
+      name: quote_length_gte
+      in: query
+      description: Filter quotes greater than or equal to the specified character value.
+      required: false
+      schema:
+        type: integer
+    QuoteLengthLteParam:
+      name: quote_length_lte
+      in: query
+      description: Filter quotes less than or equal to the specified character value.
+      required: false
+      schema:
+        type: integer
+    SortParam:
+      name: _sort
+      in: query
+      description: The field(s) to sort the results by. Multiple fields can be specified by separating them with commas. If not provided, the default is to sort by the `id` property of the Quote objects.
+      required: false
+      schema:
+        type: string
+        default: id
+    OrderParam:
+      name: _order
+      in: query
+      description: The sorting order of the returned Quote objects, ascending or descending. Applies to all fields specified in `_sort`. If not provided, the default is ascending order.
+      required: false
+      schema:
+        type: string
+        enum:
+            - asc
+            - desc
+        default: asc
+    LimitParam:
+      name: limit
+      in: query
+      description: The numbers of quotes to return per page.
+      required: false
+      schema:
+        type: integer
+        default: 5
+    OffsetParam:
+      name: offset
+      in: query
+      description: The number of quotes to skip before starting to return quotes.
+      required: false
+      schema:
+        type: integer
+        default: 0
+
   schemas:
     Quote:
       type: object
+      description: A quote from a literary work.
       properties:
         id:
           type: integer
+          description: The unique identifier for the quote.
         author:
           type: string
+          description: The name of the author.
         author_id:
           type: integer
+          description: The unique identifier for the author.
         work:
           type: string
+          description: The title of the literary work.
         work_id:
           type: integer
+          description: The unique identifier for the literary work.
+        category:
+          type: string
+          enum:
+            - Fiction
+            - Nonfiction
+          description: The category of the literary work.
         genre:
-          type: string
+          $ref: "#/components/schemas/Genres"
         publish_date:
-          type: string
+          $ref: "#/components/schemas/PublishDate"
         quote_length:
           type: integer
+          description: The character length of the quote.
         source:
           type: string
+          format: uri
+          description: The URL or the resource where the quote was sourced.
         quote:
           type: string
+          description: The text of the quote.
+
+    Genres:
+      type: array
+      description: The genre(s) of the literary work.
+      items:
+        type: string
+        enum:
+          - "Adventure"
+          - "Biography"
+          - "Children’s"
+          - "Dystopian"
+          - "Essays"
+          - "Fantasy"
+          - "Historical"
+          - "History"
+          - "Horror"
+          - "Humanities"
+          - "Humor"
+          - "Literary"
+          - "Modernist"
+          - "Mystery"
+          - "Philosophy"
+          - "Romance"
+          - "Science"
+          - "Sci-Fi"
+          - "Self-help"
+          - "Spirituality"
+          - "Women’s"
+
+    PublishDate:
+      type: string
+      description: A date that can represent full dates (YYYY-MM-DD), years (YYYY), 1- to 3-digit BCE years (for example, 800 BCE), and 1- to 3-digit CE years (for example, 300 CE or 300).
+      pattern: ^(\d{4}-\d{2}-\d{2}|\d{4}|\d{1,3}( CE)?|\d{1,3} BCE)$
+      examples:
+        Full date:
+          value: "1892-10-14"
+        Year only:
+          value: "1954"
+        CE year:
+          value: "180 CE"
+        Short CE year:
+          value: "300"
+        BCE year:
+          value: "800 BCE"
+
     Pagination:
       type: object
+      description: Provides metadata for paginated quote results.
       properties:
         current_page:
           type: integer
+          description: The current page number.
+        page_size:
+          type: integer
+          description: The number of items per page.
+        total_count:
+          type: integer
+          description: The total number of items.
         total_pages:
           type: integer
-        total_items:
-          type: integer
+          description: The total number of pages.
+
     Error:
       type: object
       properties:
         code:
           type: integer
-          description: The HTTP response code of the error.
+          description: The HTTP status code for the error.
         error:
           type: string
-          description: A machine parsable string that represents the code.
-        description:
+          description: A machine-parsable string representing the error.
+        details:
           type: string
-          description: A description of the error.
-    security:
-      - basicAuth: []
+          description: A human-readable explanation of the error with more information.
+
+  responses:
+    QuotesResponse:
+      description: A successful response containing a list of quotes and pagination details.
+      headers:
+        X-Total-Count:
+          description: The total number of items available.
+          schema:
+            type: integer
+          example: 100
+        X-Limit:
+          description: The number of items requested.
+          schema:
+            type: integer
+          example: 10
+        X-Offset:
+          description: The number of items skipped.
+          schema:
+            type: integer
+          example: 0
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              quotes:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Quote"
+              pagination:
+                $ref: "#/components/schemas/Pagination"
+          example:
+            quotes:
+              id: 41
+              author: "Mark Twain"
+              author_id: 4
+              work: "Roughing It"
+              work_id: 37
+              category: "Nonfiction"
+              genre:
+                - "Humor"
+                - "Travel"
+              publish_date: "1872-01-01"
+              quote_length: 68
+              source: "https://www.gutenberg.org/ebooks/3177"
+              quote: "Courage is resistance to fear, mastery of fear, not absence of fear."
+            pagination:
+              total: 45
+              limit: 5
+              offset: 0
+              currentPage: 8
+              totalPages: 9
+
+    RandomQuoteResponse:
+      description: A successful response containing a random quote.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Quote"
+          example:
+            quote:
+              id: 41
+              author: "Mark Twain"
+              author_id: 4
+              work: "Roughing It"
+              work_id: 37
+              category: "Nonfiction"
+              genre:
+                - "Humor"
+                - "Travel"
+              publish_date: "1872-01-01"
+              quote_length: 68
+              source: "https://www.gutenberg.org/ebooks/3177"
+              quote: "Courage is resistance to fear, mastery of fear, not absence of fear."
+
+    BadRequestError:
+      description: Returned on bad requests.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 400
+            error: bad_request
+            details: The request could not be understood and may have incorrect parameters. Make sure your query parameters are correct.
+
+    UnauthorizedError:
+      description: Returned when authentication fails.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 401
+            error: unauthorized
+            details: Authentication failed. Make sure your request includes the Authorization header and that you're using the correct Base64-encoded username and password.
+
+    NotFoundError:
+      description: Returned when the requested resource is not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 404
+            error: not_found
+            details: No quotes match the provided parameters. The resource might not exist or it might be unavailable.
+
+    TooManyRequestsError:
+      description: Returned when the rate limit has been exceeded.
+      headers:
+        Retry-After:
+          description: Indicates how long the client needs to wait before making another request.
+          schema:
+            type: integer
+          example: 60
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 429
+            error: too_many_requests
+            details: You have exceeded the maximum number of requests. The limit will reset in 60 seconds and you can try again.
+
+    InternalServerError:
+      description: Returned when an unexpected error occurs on the server.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 500
+            error: internal_server_error
+            details: An unexpected error occurred. Please try again later. If the problem persists, contact Support.
