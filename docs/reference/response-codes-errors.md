@@ -1,151 +1,122 @@
 # Response codes and errors
 
-When a client request is successful or an error occurs, the response header will contain a standard HTTP status code and message. The response body will also contain the HTTP status code and message along with a description.
+The Literary Quotes API uses standard HTTP response codes to indicate the success or failure of a request. Response codes are returned in the HTTP response headers.
 
-## API responses and examples
+A successful request returns a Quote object (or an array of Quote objects) or a RandomQuote object.
 
-The Literary Quotes API uses the following HTTP response codes and error messages:
+When an error occurs, the API returns a JSON response with details about the error.
 
-| Status Code | Message                | Description                                                                                   |
-|-------------|------------------------|-----------------------------------------------------------------------------------------------|
-| [200](placeholder-link)         | OK                     | The request was successful and the server responded with the requested data.                  |
-| [400](placeholder-link)          | Bad Request            | The server could not understand the request due to invalid syntax.                            |
-| [401](placeholder-link)          | Unauthorized           | Authentication is required and has failed or has not yet been provided.                       |
-| [403](placeholder-link)          | Forbidden              | The server understood the request but refuses to authorize it.                                |
-| [404](placeholder-link)          | Not Found              | The requested resource could not be found on the server.                                      |
-| [500](placeholder-link)          | Internal Server Error  | The server encountered an unexpected condition that prevented it from fulfilling the request. |
-| [503](placeholder-link)          | Service Unavailable    | The server is not ready to handle the request, typically due to maintenance or overload.      |
+The API uses the following HTTP response codes and error messages:
 
-Below are common HTTP status codes used in the Literary Quotes API, including JSON examples and explanations of what could cause these responses.
+| Status Code | Message | Details |
+| ----------- | ------- | ------- |
+| [`200`](#200-ok) | `OK` | No message is returned. Indicates the request was successful, and the response body contains the requested data. |
+| [`400`](#400-bad-request) | `bad_request` | The request could not be understood and may have incorrect parameters. Make sure your query parameters are correct. |
+| [`401`](#401-unauthorized) | `unauthorized` | Authentication failed. Make sure your request includes the Authorization header and that you're using the correct Base64-encoded username and password. |
+| [`404`](#404-not-found) | `not_found` | No quotes match the provided parameters. The resource might not exist or it might be unavailable. |
+| [`429`](#429-too-many-requests) | `too_many_requests` | You have exceeded the maximum number of requests. The limit will reset in 60 seconds and you can try again. |
+| [`500`](#500-internal-server-error) | `internal_server_error`  | An unexpected error occurred. Please try again later. If the problem persists, contact Support.|
 
 ### 200 OK
 
-**Description**: The request was successful, and the server responded with the requested data.
+The request was successful and the server responded with the requested quote or array of quotes.
 
-**Example JSON Response**:
+**Example response**:
 
-```json
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
 {
   "status_code": 200,
   "data": {
-    "id": 1,
+    "id": 46,
     "author": "Ralph Waldo Emerson",
     "work": "The Essays of Ralph Waldo Emerson",
+    "work_id": 31,
+    "category": "Nonfiction",
     "genre": "Essays",
-    "publish_date": "1841",
-    "quote": "Life is a train of moods like a string of beads..."
+    "publish_date": "1841-01-01",\
+    "source": "https://www.gutenberg.org/ebooks/16643",
+    "quote": "A foolish consistency is the hobgoblin of little minds."
   }
 }
 ```
 
-**Causes**:
-- A valid request to fetch quotes or specific quote data was made.
-
 ### 400 Bad Request
 
-**Description**: The server could not understand the request due to invalid syntax.
+The request was malformed or contained invalid parameters.
 
 **Example JSON Response**:
 
-```json
+```http
+HTTP/1.1 429 Bad Request
+Content-Type: application/json
 {
-  "status_code": 400,
-  "message": "Bad Request",
-  "description": "The request could not be understood or was missing required parameters."
+  "code": 400,
+  "error": "bad_request",
+  "details": "The request could not be understood and may have missing or incorrect content or parameters. Make sure your query parameters are correct."
 }
 ```
-
-**Causes**:
-- Missing required query parameters.
-- Malformed JSON in the request body.
-- Invalid query parameter values (e.g., non-numeric value for a numeric field).
 
 ### 401 Unauthorized
 
-**Description**: Authentication is required and has failed or has not yet been provided.
+[Authentication](#placeholder-link) failed due to invalid or missing credentials.
 
 **Example JSON Response**:
 
-```json
+```http
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
 {
-  "status_code": 401,
-  "message": "Unauthorized",
-  "description": "Authentication failed. Please check your username and password."
+  "code": 401,
+  "error": "unauthorized",
+  "details": "Authentication failed. Make sure your request includes the Authorization header and that your username and password are correct and Base64 encoded."
 }
 ```
 
-**Causes**:
-- Incorrect or missing authentication credentials.
-- Credentials not base64-encoded properly.
+### 404 Not found
 
-### 403 Forbidden
+The request [resource](#placeholder-link) or [endpoint](#placeholder-link) does not exist.
 
-**Description**: The server understood the request but refuses to authorize it.
+**Example response**:
 
-**Example JSON Response**:
-
-```json
+```http
+HTTP/1.1 404 Too Many Requests
+Content-Type: application/json
 {
-  "status_code": 403,
-  "message": "Forbidden",
-  "description": "You do not have permission to access this resource."
+  "code": 404,
+  "error": "not_found",
+  "details": "No quotes match the provided query parameters. The resource might not exist or it might be unavailable."
 }
 ```
 
-**Causes**:
-- The user does not have the necessary permissions for the resource.
-- The account may be suspended or restricted.
+### 429 Too Many Requests
 
-### 404 Not Found
+The [rate limit](#placeholder-link) has been exceeded.
 
-**Description**: The requested resource could not be found on the server.
-
-**Example JSON Response**:
-
-```json
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 60
+Content-Type: application/json
 {
-  "status_code": 404,
-  "message": "Not Found",
-  "description": "The requested resource was not found."
+  "code": 429,
+  "error": "too_many_requests",
+  "details": "You have exceeded the maximum number of requests. Please wait for 60 seconds before making another request."
 }
 ```
-
-**Causes**:
-- The resource ID does not exist.
-- The endpoint is incorrect.
 
 ### 500 Internal Server Error
 
-**Description**: The server encountered an unexpected condition that prevented it from fulfilling the request.
+The server encountered an unexpected condition that prevented it from fulfilling the request.
 
 **Example JSON Response**:
 
-```json
+```http
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
 {
-  "status_code": 500,
-  "message": "Internal Server Error",
-  "description": "An unexpected error occurred on the server."
+  "code": 500,
+  "error": "internal_server_error",
+  "details": "An unexpected error occurred. Please try again later. If the problem persists, contact support."
 }
 ```
-
-**Causes**:
-- An unhandled exception on the server.
-- A problem with the server configuration or resource availability.
-
-### 503 Service Unavailable
-
-**Description**: The server is not ready to handle the request, typically due to maintenance or overload.
-
-**Example JSON Response**:
-
-```json
-{
-  "status_code": 503,
-  "message": "Service Unavailable",
-  "description": "The server is currently unable to handle the request due to temporary overload or scheduled maintenance."
-}
-```
-
-**Causes**:
-- The server is down for maintenance.
-- The server is temporarily overloaded.
