@@ -1,1 +1,1 @@
-json-server -w literary-quotes-db-source.json
+json-server -w literary-quotes-db.json
