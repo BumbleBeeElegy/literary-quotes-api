@@ -1,6 +1,6 @@
 # Get quotes by author
 
-Fetch quotes filtered by author. Supports pagination and sorting options.
+Fetch quotes filtered by the author. You can use the `author`, `author_like`, and `author_id` query parameters. Supports sorting and pagination options.
 
 ## Method
 
@@ -8,17 +8,19 @@ Fetch quotes filtered by author. Supports pagination and sorting options.
 
 ## URL
 
-`/api/v1/quotes?author={author}`
+- `http://localhost:3000/quotes`
 
 #### Query parameters
 
-| Parameter | Type   | Required | Description                                                   |
-|-----------|--------|----------|---------------------------------------------------------------|
-| author    | string | Yes      | Name of the author to filter quotes by.                       |
-| page      | int    | No       | Page number for pagination. Defaults to 1.                    |
-| limit     | int    | No       | Number of results per page. Defaults to 10.                   |
-| orderby   | string | No       | Attribute to order results by (e.g., author, work, genre).    |
-| sort      | string | No       | Sort order: `asc` (ascending) or `desc` (descending). Defaults to `asc`. |
+| Parameter     | Type    | Description |
+|---------------|---------|-------------|
+| `author`      | string  | Filter quotes by the work's title |
+| `author_like` | string  | Filter quotes by one or more keywords in the work's title |
+| `author_id`   | integer | Filter quotes by the work's ID. |
+| `_order`      | string  | Property to order results by (for example: author, work, genre). |
+| `_sort`       | string  | Sort order: `asc` (ascending) or `desc` (descending). Defaults to `asc`. |
+| `offset`      | integer | Page number for pagination. Defaults to 1. |
+| `limit`       | integer | Number of results per page. Defaults to 5. |
 
 <!--TODO: Include information about query syntax.-->
 

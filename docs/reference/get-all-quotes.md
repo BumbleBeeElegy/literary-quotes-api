@@ -8,7 +8,7 @@ Fetch all quotes from the database. Supports pagination and sorting options.
 
 ## URL
 
-`https://literary-quotes.com/api/v1/quotes`
+`http://localhost:3000/quotes`
 
 ## Query parameters
 

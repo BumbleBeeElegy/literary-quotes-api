@@ -1,56 +1,61 @@
-# `quotes` resource
+# Quote resource
 
-The `quotes` resource provides access to a curated database of literary quotes. This resource supports fetching quotes with various filters and pagination options.
-<!--TODO: Add links to filter + pagination guides.-->
+The `quote` resource contains information about the curated quote, including the literary work the quote comes from, as well as the author, category, genre(s), publication date, quote length, and source.
 
 ## Method
 
-`GET`
+- `GET`
 
-## URL
+## Endpoints
 
-`https://literary-quotes.com/api/v1/quotes`
+- `http://localhost:3000/quotes`
+- `http://localhost:3000/quotes/random`
 
 ## Resource properties
 
-### JSON example
+An example `quote` resource:
 
 ```json
 {
   "id": 1,
-  "author": "Ralph Waldo Emerson",
-  "author_id": 1,
-  "work": "The Essays of Ralph Waldo Emerson",
-  "work_id": 1,
-  "genre": "Essays",
-  "publish_date": "1841",
-  "quote_length": 119,
-  "source": "https://www.gutenberg.org/ebooks/2945",
-  "quote": "Life is a train of moods like a string of beads; and as we pass through them they prove to be many-colored lenses which paint the world their own hue, and each shows only what lies in its own focus."
+  "author": "Virginia Woolf",
+  "author_id": 18,
+  "work": "A Room of One's Own",
+  "work_id": 69197,
+  "category": "Nonfiction",
+  "genre": ["Essays", "Feminism"],
+  "publish_date": "1929-10-24",
+  "quote_length": 120,
+  "source": "https://www.gutenberg.org/ebooks/69197",
+  "quote": "Lock up your libraries if you like; but there is no gate, no lock, no bolt that you can set upon the freedom of my mind."
 }
 ```
 
 ### Object schema
 
-| Property      | Type   | Required | Description                                                                                 |
-|---------------|--------|----------|---------------------------------------------------------------------------------------------|
-| id            | int    | Yes      | Unique identifier for the quote.                                                            |
-| author        | string | Yes      | The author of the quote.                                                                    |
-| author_id     | int    | Yes      | Unique identifier for the author.                                                           |
-| work          | string | Yes      | The title of the work from which the quote is taken.                                        |
-| work_id       | int    | Yes      | Unique identifier for the work.                                                             |
-| genre         | string | Yes      | The genre of the work.                                                                      |
-| publish_date  | string | Yes      | The publication date of the work.                                                           |
-| quote_length  | int    | Yes      | The length of the quote in characters.                                                      |
-| source        | string | Yes      | The source URL where the quote can be found.                                                |
-| quote         | string | Yes      | The text of the quote.                                                                      |
+| Property     | Type       | Required | Description |
+|--------------|------------|----------|-------------|
+| `id`           | integer    | Yes      | The unique identifier for the quote. |
+| `author`       | string     | Yes      | The name of the author. |
+| `author_id`    | integer    | Yes      | The unique identifier for the author. |
+| `work`         | string     | Yes      | The title of the literary work. |
+| `work_id`      | integer    | Yes      | The unique identifier for the literary work. |
+| `category`     | string     | Yes      | The category of the literary work. Possible values:<br>• Fiction<br>• Nonfiction |
+| `genre`        | array      | Yes      | The genre(s) of the literary work. Each item is a string. Possible values include one or more of:<br>• Adventure<br>• Biography<br>• Children's<br>• Dystopian<br>• Essays<br>• Fantasy<br>• Feminism<br>• Historical<br>• History<br>• Horror<br>• Humanities | • Humour<br>• Literary<br>• Modernist<br>• Mystery<br>• Romance<br>• Science<br>• Science Fiction<br>• Self-help<br>• Spirituality<br>• Women's |
+| `publish_date` | string     | Yes      | The publication date of the literary work. This can represent:<br>• full dates (YYYY-MM-DD)<br>• years (YYYY)<br>• 1- to 3-digit BCE years (for example, 800 BCE)<br>• 1- to 3-digit CE years (for example, 300 CE or 300). |
+| `quote_length` | integer    | Yes      | The character length of the quote. |
+| source       | string     | Yes      | The URL of the online asset the quote was sourced from. |
+| `quote`        | string     | Yes      | The text of the quote. |
+
 ## Supported operations
 
-- **GET**: Fetch quotes with optional filters and pagination.
-
-- [Get all quotes](#)
-- [Get quotes by author](#)
-- [Get quotes by work](#)
-- [Get quotes by genre](#)
-- [Get quotes by publication date](#)
-- [Get quotes by length](#)
+- [GET all quotes](./get-all-quotes.md)
+- [GET quotes by author](./get-quotes-by-author.md)
+- [GET quotes by work](./get-quotes-by-work.md)
+- [GET quotes by category](./reference/get-quotes-by-category.md)
+- [GET quotes by genre](./get-quotes-by-genre.md)
+- [GET quotes by publication date](./get-quotes-by-publish-date.md)
+- [GET quotes by length](./get-quotes-by-length.md)
+- [GET quotes using query parameters](./reference/get-quotes-with-parameters)
+- [GET a random quote](./get-random-quote.md)
+- [GET a random quote using query parameters](./get-random-quote-with-parameters)

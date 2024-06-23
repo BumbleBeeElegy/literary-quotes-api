@@ -1,6 +1,6 @@
 # Get quotes by work
 
-Fetch quotes filtered by the literary work. Supports pagination and sorting options.
+Fetch quotes filtered by the literary work. You can use the `work`, `work_like`, or `work_id` query parameters. Supports sorting and pagination options.
 
 ## Method
 
@@ -8,95 +8,94 @@ Fetch quotes filtered by the literary work. Supports pagination and sorting opti
 
 ## URL
 
-`http://localhost:3000//api/v1/quotes?work={work}`
+- `http://localhost:3000/quotes`
 
 ## Query parameters
 
-| Parameter | Type   | Required | Description                                                   |
-|-----------|--------|----------|---------------------------------------------------------------|
-| work      | string | Yes      | Title of the work to filter quotes by.                        |
-| page      | int    | No       | Page number for pagination. Defaults to 1.                    |
-| limit     | int    | No       | Number of results per page. Defaults to 10.                   |
-| orderby   | string | No       | Attribute to order results by (e.g., author, work, genre).    |
-| sort      | string | No       | Sort order: `asc` (ascending) or `desc` (descending). Defaults to `asc`. |
+| Parameter   | Type    | Description |
+|-------------|---------|-------------|
+| `work`      | string  | Filter quotes by the work's title |
+| `work_like` | string  | Filter quotes by one or more keywords in the work's title |
+| `work_id`   | integer | Filter quotes by the work's ID. |
+| `_order`      | string  | Property to order results by (for example: author, work, genre). |
+| `_sort`       | string  | Sort order: `asc` (ascending) or `desc` (descending). Defaults to `asc`. |
+| `offset`      | integer | Page number for pagination. Defaults to 1. |
+| `limit`       | integer | Number of results per page. Defaults to 5. |
 
-<!--TODO: Include information about query syntax.-->
+**Examples:**
 
-### Pagination and sorting parameters
-
-#### `orderby`
-
-- **Description**: Specifies the attribute by which to order the results. Permissible attributes include `author`, `work`, `genre`, `publish_date`, and `quote_length`.
-- **Default**: `author`
-
-#### `sort`
-
-- **Description**: Specifies the sort order of the results. Permissible values are `asc` (ascending) and `desc` (descending).
-- **Default**: `asc`
+- `GET /quotes?work=To Kill A Mockingbird`
+- `GET /quotes?work_like=Mockingbird`
+- `GET /quotes?work_id=28520`
 
 ## Requests
 
 ### Request headers
 
-| Header Name      | Description                                    |
-|------------------|------------------------------------------------|
-| Authorization    | Basic base64-encoded username:password.        |
+| Header Name      | Content          |
+|------------------|------------------|
+| `Authorization`  | `Basic <your_base64_encrypted_credentials>`. |
+| `Accept`         | `application/json` |
 
 ### Request body
 
 The GET request doesn't include a body.
 
-### Example request
+### Example requests
+
+Get quotes by the title of the work:
 
 ```bash
-curl -X GET "https://literary-quotes.com/api/v1/quotes?work=The%20Essays%20of%20Ralph%20Waldo%20Emerson&page=1&limit=5&orderby=author&sort=asc" -H "Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ="
+curl -X GET ""http://localhost:3000/quotes?work=To+Kill+a+Mockingbird" -H "Authorization: Basic dXNlcjpwYXNz" -H "Accept: application/json"
+```
+
+Get quotes by a keyword in the title of the work:
+
+```bash
+curl -X GET ""http://localhost:3000/quotes?work_like=Mockingbird" \
+-H "Authorization: Basic dXNlcjpwYXNz" \
+-H "Accept: application/json"
+```
+
+Get quotes by the work ID:
+
+```bash
+curl -X GET "http://localhost:3000/quotes?work_id=28520" \
+-H "Authorization: Basic dXNlcjpwYXNz" \
+-H "Accept: application/json"
 ```
 
 ## Response
-
-**`200`** Returns an array of Quotes objects.
-**`400`**
-**`401`**
-**`403`**
-**`404`**
-**`500`**
 
 A `200` response returns a `quote` object or an array of `quote` objects that contain the quote(s) specified in the request.
 
 ### Example response
 
 ```json
-{
-  "status_code": 200,
-  "data": [
-    {
-      "id": 1,
-      "author": "Ralph Waldo Emerson",
-      "work": "The Essays of Ralph Waldo Emerson",
-      "genre": "Essays",
-      "publish_date": "1841",
-      "quote_length": 119,
-      "source": "https://www.gutenberg.org/ebooks/2945",
-      "quote": "Life is a train of moods like a string of beads..."
-    },
-    // Additional quotes...
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 5,
-    "total_pages": 2,
-    "total_quotes": 10
+[
+  {
+    "id": 2,
+    "author": "Harper Lee",
+    "author_id": 2,
+    "work": "To Kill a Mockingbird",
+    "work_id": 28520,
+    "category": "Fiction",
+    "genre": "Literary",
+    "publish_date": "1960-07-11",
+    "quote_length": 86,
+    "source": "https://www.gutenberg.org/ebooks/28520",
+    "quote": "You never really understand a person until you consider things from his point of view."
   }
-}
+]
 ```
 
 ### Return status
 
-| Status Code | Message                | Description                                                                                   |
-|-------------|------------------------|-----------------------------------------------------------------------------------------------|
-| 200         | OK                     | The request was successful and the server responded with the requested data.                  |
-| 400         | Bad Request            | The server could not understand the request due to invalid syntax.                            |
-| 401         | Unauthorized           | Authentication is required and has failed or has not yet been provided.                       |
-| 403         | Forbidden              | The server understood the request but refuses to authorize it.                                |
-| 404         | Not Found              | The requested resource could not be found on the server.                                      |
-| 500         | Internal Server Error  | The server encountered an unexpected condition that prevented it from fulfilling the request. |
+| Code  | Status / Error | Details |
+|-------|----------------|---------|
+| `200` | `OK` | Indicates the request was successful and the response body contains the requested data. |
+| `400` | `bad_request` | The request could not be understood and may have incorrect parameters. Make sure your query parameters are correct. |
+| `401` | `unauthorized` | Authentication failed. Make sure your request includes the Authorization header and that you're using the correct Base64-encoded username and password. |
+| `404` | `not_found` | No quotes match the provided parameters. The resource might not exist or it might be unavailable. |
+| `429` | `too_many_requests` | You have exceeded the maximum number of requests. The limit will reset in 60 seconds and you can try again. |
+| `500` | `internal_server_error`  | An unexpected error occurred. Please try again later. If the problem persists, contact Support.|

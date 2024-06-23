@@ -17,10 +17,10 @@ paths:
         - quotes
       parameters:
         - $ref: '#/components/parameters/AuthorParam'
-        - $ref: '#/components/parameters/AuthorContainsParam'
+        - $ref: '#/components/parameters/AuthorlikeParam'
         - $ref: '#/components/parameters/AuthorIdParam'
         - $ref: '#/components/parameters/WorkParam'
-        - $ref: '#/components/parameters/WorkContainsParam'
+        - $ref: '#/components/parameters/WorklikeParam'
         - $ref: '#/components/parameters/WorkIdParam'
         - $ref: '#/components/parameters/CategoryParam'
         - $ref: '#/components/parameters/GenreParam'
@@ -84,8 +84,8 @@ components:
       required: false
       schema:
         type: string
-    AuthorContainsParam:
-      name: author_contains
+    AuthorlikeParam:
+      name: author_like
       in: query
       description: Filter quotes by the author's name with partial matching. Supports searching by first name, last name, or both.
       required: false
@@ -105,8 +105,8 @@ components:
       required: false
       schema:
         type: string
-    WorkContainsParam:
-      name: work_contains
+    WorklikeParam:
+      name: work_like
       in: query
       description: Filter quotes by the work's title with partial matching. Supports searching by one or more words in the title.
       required: false
@@ -252,6 +252,7 @@ components:
           - "Dystopian"
           - "Essays"
           - "Fantasy"
+          - "Feminism"
           - "Historical"
           - "History"
           - "Horror"
