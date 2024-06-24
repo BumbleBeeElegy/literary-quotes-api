@@ -17,10 +17,10 @@ paths:
         - quotes
       parameters:
         - $ref: '#/components/parameters/AuthorParam'
-        - $ref: '#/components/parameters/AuthorlikeParam'
+        - $ref: '#/components/parameters/AuthorLikeParam'
         - $ref: '#/components/parameters/AuthorIdParam'
         - $ref: '#/components/parameters/WorkParam'
-        - $ref: '#/components/parameters/WorklikeParam'
+        - $ref: '#/components/parameters/WorkLikeParam'
         - $ref: '#/components/parameters/WorkIdParam'
         - $ref: '#/components/parameters/CategoryParam'
         - $ref: '#/components/parameters/GenreParam'
@@ -28,10 +28,12 @@ paths:
         - $ref: '#/components/parameters/QuoteLengthParam'
         - $ref: '#/components/parameters/QuoteLengthGteParam'
         - $ref: '#/components/parameters/QuoteLengthLteParam'
+        - $ref: '#/components/parameters/QuoteLikeParam'
         - $ref: '#/components/parameters/SortParam'
         - $ref: '#/components/parameters/OrderParam'
         - $ref: '#/components/parameters/LimitParam'
-        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/FieldsParam'
       responses:
         '200':
           $ref: '#/components/responses/QuotesResponse'
@@ -51,15 +53,16 @@ paths:
       security:
         - basicAuth: []
       summary: Retrieve a random quote
-      description: Fetch a random quote from the curated database. Supports filtering by author ID, work ID, category, and genre.
+      description: Fetch a random quote from the curated database. Supports filtering by author, category, genre, and keywords in the quote.
       operationId: getRandomQuote
       tags:
         - random
       parameters:
-        - $ref: '#/components/parameters/AuthorIdParam'
-        - $ref: '#/components/parameters/WorkIdParam'
+        - $ref: '#/components/parameters/AuthorParam'
         - $ref: '#/components/parameters/CategoryParam'
         - $ref: '#/components/parameters/GenreParam'
+        - $ref: '#/components/parameters/QuoteLikeParam'
+        - $ref: '#/components/parameters/FieldsParam'
       responses:
         '200':
           $ref: '#/components/responses/RandomQuoteResponse'
@@ -84,7 +87,7 @@ components:
       required: false
       schema:
         type: string
-    AuthorlikeParam:
+    AuthorLikeParam:
       name: author_like
       in: query
       description: Filter quotes by the author's name with partial matching. Supports searching by first name, last name, or both.
@@ -105,7 +108,7 @@ components:
       required: false
       schema:
         type: string
-    WorklikeParam:
+    WorkLikeParam:
       name: work_like
       in: query
       description: Filter quotes by the work's title with partial matching. Supports searching by one or more words in the title.
@@ -129,6 +132,14 @@ components:
         enum:
           - Fiction
           - Nonfiction
+    FieldsParam:
+      name: fields
+      in: query
+      description: Comma-separated list of fields to include in the response. If not specified, all fields are returned.
+      required: false
+      schema:
+        type: string
+      example: "id,author,work,source,quote"
     GenreParam:
       name: genre
       in: query
@@ -163,18 +174,25 @@ components:
       required: false
       schema:
         type: integer
-    SortParam:
-      name: _sort
+    QuoteLikeParam:
+      name: quote_like
       in: query
-      description: The field(s) to sort the results by. Multiple fields can be specified by separating them with commas. If not provided, the default is to sort by the `id` property of the Quote objects.
+      description: Filter quotes by the work's title with partial matching. Supports searching by one or more keywords in the quote.
+      required: false
+      schema:
+        type: string
+    SortParam:
+      name: sort
+      in: query
+      description: Comma-separated list of fields to sort the results by. If not specified, the default is to sort by the `id` property of the Quote objects.
       required: false
       schema:
         type: string
         default: id
     OrderParam:
-      name: _order
+      name: order
       in: query
-      description: The sorting order of the returned Quote objects, ascending or descending. Applies to all fields specified in `_sort`. If not provided, the default is ascending order.
+      description: The sorting order of the returned Quote objects, ascending or descending. Applies to all fields specified in `sort`. If not provided, the default is ascending order.
       required: false
       schema:
         type: string
@@ -190,14 +208,14 @@ components:
       schema:
         type: integer
         default: 5
-    OffsetParam:
-      name: offset
+    PageParam:
+      name: page
       in: query
       description: The number of quotes to skip before starting to return quotes.
       required: false
       schema:
         type: integer
-        default: 0
+        default: 1
 
   schemas:
     Quote:

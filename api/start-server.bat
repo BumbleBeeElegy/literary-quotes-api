@@ -1,1 +1,4 @@
-json-server -w literary-quotes-db.json
+@echo off
+
+:: Start the server using Node
+node server.js

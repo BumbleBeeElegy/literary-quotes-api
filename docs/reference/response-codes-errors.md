@@ -58,6 +58,16 @@ Content-Type: application/json
 }
 ```
 
+different one specially showing parameters that can be used:
+
+  if (!validateQueryParams(allowedParams, req)) {
+    return res.status(400).json({
+      code: 400,
+      error: 'bad_request',
+      details: `Invalid query parameter. Allowed parameters are: ${allowedParams.join(', ')}`
+    });
+
+
 ### 401 Unauthorized
 
 [Authentication](../guides/authorization.md) failed due to invalid or missing credentials.

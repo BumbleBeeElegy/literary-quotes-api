@@ -1,2 +1,4 @@
 #!/bin/bash
-json-server -w literary-quotes-db.json
+
+# Start the server using Node
+node server.js

@@ -9,6 +9,11 @@ layout: page
 
 Get literary quotes from a curated public domain database built on Project Gutenberg.
 
+<!--TODO: Check all docs to make sure curl examples use double quotes.-->
+<!--TODO: Check all docs to make sure new and updated content has been added across all relevant docs.-->
+<!--TODO: Check all links once documentation set is complete.-->
+
+
 ## Product overview
 
 * [Introduction to the API](./overview/introduction.md)
@@ -22,7 +27,7 @@ Get literary quotes from a curated public domain database built on Project Guten
 
 ## API fundamentals
 
-* [Requests](./guides/requests.md)
+* [Requests](./guides/requests.md)<!--Explain concepts like case sensitivity, testing setup, etc.-->
   * [Endpoints](./guides/endpoints.md)
   * [Request methods](./guides/request-methods.md)
   * [Authorization](./guides/authorization.md)
@@ -39,7 +44,7 @@ Get literary quotes from a curated public domain database built on Project Guten
 
 ## Tutorials
 
-* [Set up a testing environment](./guides/set-up-testing-environment)
+* [Set up a testing environment](./guides/set-up-testing-environment)<!--Add info about server.js file and adjustment to setup steps.-->
 * [Use query parameters for filtering, sorting, and pagination](./guides/query-parameters-tutorial)
 
 ## Reference
@@ -54,7 +59,7 @@ Get literary quotes from a curated public domain database built on Project Guten
     * [GET quotes by genre](./reference/get-quotes-by-genre.md)
     * [GET quotes by publication date](./reference/get-quotes-by-date.md)
     * [GET quotes by length](./reference/get-quotes-by-length.md)
-    * [GET quotes using query parameters](./reference/get-quotes-with-parameters)
+    * [GET quotes using query parameters](./reference/get-quotes-with-parameters)~
     * [GET a random quote](./reference/get-random-quote.md)
     * [GET a random quote using query parameters](placeholder)
 * [cURL examples](./reference/curl-examples.md)
