@@ -1,3 +1,9 @@
+---
+layout: page
+allowTitleToDifferFromFilename: Literary Quotes API
+type: reference
+---
+
 # Get quotes by author
 
 Fetch quotes filtered by the author. You can use the `author`, `author_like`, and `author_id` query parameters. Supports sorting and pagination options.
@@ -8,7 +14,9 @@ Fetch quotes filtered by the author. You can use the `author`, `author_like`, an
 
 ## URL
 
-- `http://localhost:3000/quotes`
+- `http://localhost:3000/quotes?author={author_name}`
+- `http://localhost:3000/quotes?author_like={partial_author_name}`
+- `http://localhost:3000/quotes?author_id={author_id}`
 
 #### Query parameters
 

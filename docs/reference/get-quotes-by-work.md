@@ -1,3 +1,9 @@
+---
+layout: page
+allowTitleToDifferFromFilename: Literary Quotes API
+type: reference
+---
+
 # Get quotes by work
 
 Fetch quotes filtered by the literary work. You can use the `work`, `work_like`, or `work_id` query parameters. Supports sorting and pagination options.
@@ -45,13 +51,13 @@ The GET request doesn't include a body.
 
 Get quotes by the title of the work:
 
-```bash
+```shell
 curl -X GET ""http://localhost:3000/quotes?work=To+Kill+a+Mockingbird" -H "Authorization: Basic dXNlcjpwYXNz" -H "Accept: application/json"
 ```
 
 Get quotes by a keyword in the title of the work:
 
-```bash
+```shell
 curl -X GET ""http://localhost:3000/quotes?work_like=Mockingbird" \
 -H "Authorization: Basic dXNlcjpwYXNz" \
 -H "Accept: application/json"
@@ -59,7 +65,7 @@ curl -X GET ""http://localhost:3000/quotes?work_like=Mockingbird" \
 
 Get quotes by the work ID:
 
-```bash
+```curl
 curl -X GET "http://localhost:3000/quotes?work_id=28520" \
 -H "Authorization: Basic dXNlcjpwYXNz" \
 -H "Accept: application/json"

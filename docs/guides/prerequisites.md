@@ -1,6 +1,7 @@
 ---
-title: Prerequisites
-type: get_started
+layout: page
+allowTitleToDifferFromFilename: Literary Quotes API
+type: overview
 ---
 
 # Prerequisites

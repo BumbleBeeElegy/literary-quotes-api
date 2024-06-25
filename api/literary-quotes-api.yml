@@ -23,6 +23,7 @@ paths:
         - $ref: '#/components/parameters/WorkLikeParam'
         - $ref: '#/components/parameters/WorkIdParam'
         - $ref: '#/components/parameters/CategoryParam'
+        - $ref: '#/components/parameters/FieldsParam'
         - $ref: '#/components/parameters/GenreParam'
         - $ref: '#/components/parameters/PublishDateParam'
         - $ref: '#/components/parameters/QuoteLengthParam'
@@ -33,14 +34,17 @@ paths:
         - $ref: '#/components/parameters/OrderParam'
         - $ref: '#/components/parameters/LimitParam'
         - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/FieldsParam'
       responses:
         '200':
           $ref: '#/components/responses/QuotesResponse'
         '400':
           $ref: '#/components/responses/BadRequestError'
+        '400':
+          $ref: "#/components/responses/InvalidParameterError"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '401':
+          $ref: '#/components/responses/InvalidCredentialsError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '429':
@@ -66,10 +70,20 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/RandomQuoteResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '400':
+          $ref: "#/components/responses/SyntaxError"
+        '400':
+          $ref: "#/components/responses/InvalidParameterError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '401':
+          $ref: '#/components/responses/InvalidCredentialsError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -337,21 +351,22 @@ components:
     QuotesResponse:
       description: A successful response containing a list of quotes and pagination details.
       headers:
+        X-Page-Size:
+          description: The number of items per page.
+          schema:
+            type: integer
+        X-Page:
+          description: The current page number.
+          schema:
+            type: integer
         X-Total-Count:
-          description: The total number of items available.
+          description: The total number of items available in the database.
           schema:
             type: integer
-          example: 100
-        X-Limit:
-          description: The number of items requested.
+        X-Total-Pages:
+          description: The total number of pages.
           schema:
             type: integer
-          example: 10
-        X-Offset:
-          description: The number of items skipped.
-          schema:
-            type: integer
-          example: 0
       content:
         application/json:
           schema:
@@ -379,11 +394,11 @@ components:
               source: "https://www.gutenberg.org/ebooks/3177"
               quote: "Courage is resistance to fear, mastery of fear, not absence of fear."
             pagination:
-              total: 45
-              limit: 5
-              offset: 0
-              currentPage: 8
-              totalPages: 9
+              current_page: 8
+              page_size: 5
+              total_count: 47
+              total_pages: 9
+
 
     RandomQuoteResponse:
       description: A successful response containing a random quote.
@@ -416,7 +431,18 @@ components:
           example:
             code: 400
             error: bad_request
-            details: The request could not be understood and may have incorrect parameters. Make sure your query parameters are correct.
+            details: The request could not be understood. This could be due to incorrect syntax or a missing key or value in the query parameters. Check your query string for errors.
+
+    InvalidParameterError:
+      description: Returned when a query paramater is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 400
+            error: invalid_query_parameter
+            details: Invalid query parameter. Make sure your query parameters are correct. Allowed parameters are {list_of_allowed_parameters}.
 
     UnauthorizedError:
       description: Returned when authentication fails.
@@ -429,6 +455,17 @@ components:
             error: unauthorized
             details: Authentication failed. Make sure your request includes the Authorization header and that you're using the correct Base64-encoded username and password.
 
+    InvalidCredentialsError:
+      description: Returned when authentication fails because the credentials aren't in username:password format.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 401
+            error: invalid_credential_format
+            details: Invalid credential format. Make sure your credentials are in "username:password" format before you encode them.
+
     NotFoundError:
       description: Returned when the requested resource is not found.
       content:
@@ -438,7 +475,7 @@ components:
           example:
             code: 404
             error: not_found
-            details: No quotes match the provided parameters. The resource might not exist or it might be unavailable.
+            details: No quotes match the provided parameters. The resource might not exist or is unavailable.
 
     TooManyRequestsError:
       description: Returned when the rate limit has been exceeded.

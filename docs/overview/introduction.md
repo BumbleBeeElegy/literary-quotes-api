@@ -1,7 +1,11 @@
 ---
-title: Introduction to the Literary Quotes API
+layout: page
+allowTitleToDifferFromFilename: Literary Quotes API
 type: overview
 ---
+
+# Introduction to the Literary Quotes API
+
 > [!NOTE]
 > This repository contains documentation for a mock API that was created as part of an API documentation course. The API and email addresses are imaginary, but the examples in the documentation can be tested.
 

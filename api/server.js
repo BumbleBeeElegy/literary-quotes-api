@@ -8,7 +8,7 @@ server.use(middlewares);
 
 // Basic Authorization middleware
 
-// Checks for the presence of a valid Basic Auth header (this does not validate the credentials)
+// Checks for the presence of a valid Basic Auth header (This only checks for a Base6-encoded username:password. It doesn't validate the credentials.)
 server.use((req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -16,7 +16,7 @@ server.use((req, res, next) => {
     return res.status(401).json({
       code: 401,
       error: 'unauthorized',
-      details: 'Authentication failed. Make sure your request includes the Authorization header with Base64-encoded credentials.'
+      details: 'Authentication failed. Make sure your request includes the Authorization header and that you\'re using the correct Base64-encoded username and password.'
     });
   }
 
@@ -26,8 +26,8 @@ server.use((req, res, next) => {
   if (!credentials.includes(':')) {
     return res.status(401).json({
       code: 401,
-      error: 'unauthorized',
-      details: 'Invalid credentials format. Use "username:password" format.'
+      error: 'invalid_credential_format',
+      details: 'Invalid credential format. Make sure your credentials are in "username:password" format before you encode them.'
     });
   }
 
@@ -57,7 +57,7 @@ server.use((req, res, next) => {
     return res.status(429).json({
       code: 429,
       error: 'too_many_requests',
-      details: 'The server has received too many requests. Please wait a moment and try again.'
+      details: 'You have exceeded the maximum number of requests. The limit will reset in 60 seconds and you can try again.'
     });
   }
 
@@ -75,6 +75,55 @@ server.use((req, res, next) => {
   next();
 });
 
+// Syntax validation middleware
+server.use((req, res, next) => {
+  const query = req.url.split('?')[1];
+  if (query) {
+    const params = query.split('&');
+    for (const param of params) {
+      if (!param.includes('=')) {
+        return res.status(400).json({
+          code: 400,
+          error: 'bad_request',
+          details: 'The request could not be understood. This could be due to incorrect syntax or a missing key or value in the query parameters. Check your query string for errors.'
+        });
+      }
+      const [key, value] = param.split('=');
+      if (!key || !value) {
+        return res.status(400).json({
+          code: 400,
+          error: 'bad_request',
+          details: 'The request could not be understood. This could be due to incorrect syntax or a missing key or value in the query parameters. Check your query string for errors.'
+        });
+      }
+      if (!key.match(/^[a-zA-Z_]+$/)) {
+        return res.status(400).json({
+          code: 400,
+          error: 'bad_request',
+          details: 'The request could not be understood. This could be due to incorrect syntax or a missing key or value in the query parameters. Check your query string for errors.'
+        });
+      }
+    }
+  }
+  next();
+});
+
+// Apply pagination headers
+server.use((req, res, next) => {
+  const quotes = router.db.get('quotes').value();
+  const totalItems = quotes.length;
+  const limit = parseInt(req.query.limit) || 5;
+  const page = parseInt(req.query.page) || 1;
+  const totalPages = Math.ceil(totalItems / limit);
+
+  res.header('X-Page-Size', limit);
+  res.header('X-Page', page);
+  res.header('X-Total-Count', totalItems);
+  res.header('X-Total-Pages', totalPages);
+
+  next();
+});
+
 // Helper function to validate query parameters
 function validateQueryParams(allowedParams, req) {
   return Object.keys(req.query).every(param => allowedParams.includes(param.toLowerCase()));
@@ -82,74 +131,167 @@ function validateQueryParams(allowedParams, req) {
 
 // `/quotes` endpoint
 
-// Defines behaviour for allowed parameters, filtering, pagination, and sorting
+// Defines allowed parameters
 server.get('/quotes', (req, res, next) => {
-  const allowedParams = ['id', 'author', 'author_like', 'author_id', 'work', 'work_like', 'work_id', 'category', 'genre', 'publish_date', 'quote_length', 'quote_length_gte', 'quote_length_lte', 'quote_like', 'sort', 'order', 'page', 'limit'];
+  const allowedParams = ['id', 'author', 'author_like', 'author_id', 'work', 'work_like', 'work_id', 'category', 'genre', 'publish_date', 'quote_length', 'quote_length_gte', 'quote_length_lte', 'quote_like', 'sort', 'order', 'page', 'limit', 'fields'];
 
   if (!validateQueryParams(allowedParams, req)) {
     return res.status(400).json({
       code: 400,
-      error: 'bad_request',
-      details: `Invalid query parameter. Allowed parameters are: ${allowedParams.join(', ')}`
+      error: 'invalid_query_parameter',
+      details: `Invalid query parameter. Make sure your query parameters are correct. Allowed parameters are ${allowedParams.join(', ')}.`
     });
   }
 
-  // Pagination setup
-  let { page = 1, limit = 5, sort = 'id', order = 'asc' } = req.query;
-  page = parseInt(page);
-  limit = parseInt(limit);
-
-  // Get all quotes
+   // Get all quotes
   let quotes = router.db.get('quotes').value();
 
-  // Apply filters based on query parameters
-  if (req.query.author) quotes = quotes.filter(q => q.author.toLowerCase() === req.query.author);
-  if (req.query.author_like) quotes = quotes.filter(q => q.author.toLowerCase().includes(req.query.author_like));
-  if (req.query.author_id) quotes = quotes.filter(q => q.author_id === parseInt(req.query.author_id));
-  if (req.query.work) quotes = quotes.filter(q => q.work.toLowerCase() === req.query.work);
-  if (req.query.work_like) {
-    const workKeywords = req.query.work_like.split(',');
-    quotes = quotes.filter(q => workKeywords.some(keyword => q.work.toLowerCase().includes(keyword.trim())));
-  }
-  if (req.query.work_id) quotes = quotes.filter(q => q.work_id === parseInt(req.query.work_id));
-  if (req.query.category) quotes = quotes.filter(q => q.category.toLowerCase() === req.query.category);
-  if (req.query.genre) quotes = quotes.filter(q => q.genre.map(g => g.toLowerCase()).includes(req.query.genre));
-  if (req.query.publish_date) quotes = quotes.filter(q => q.publish_date === req.query.publish_date);
-  if (req.query.quote_length) quotes = quotes.filter(q => q.quote_length === parseInt(req.query.quote_length));
-  if (req.query.quote_length_gte) quotes = quotes.filter(q => q.quote_length >= parseInt(req.query.quote_length_gte));
-  if (req.query.quote_length_lte) quotes = quotes.filter(q => q.quote_length <= parseInt(req.query.quote_length_lte));
-  if (req.query.quote_like) {
-    const quoteKeywords = req.query.quote_like.split(',');
-    quotes = quotes.filter(q => quoteKeywords.some(keyword => q.quote.toLowerCase().includes(keyword.trim())));
-  }
+  // Specifies the default sorting and ordering
+  let sortField = 'id';
+  let sortOrder = 'asc';
+  let limit = parseInt(req.query.limit) || 5;
+  let page = parseInt(req.query.page) || 1;
 
-  // Sort quotes
+  // Apply operations in the order they appear in the query string
+  const operations = Object.keys(req.query);
+
+  operations.forEach(op => {
+    switch (op.toLowerCase()) {
+      case 'limit':
+        const limit = parseInt(req.query.limit);
+        quotes = quotes.slice(0, limit);
+        break;
+      case 'page':
+        const page = parseInt(req.query.page);
+        const pageSize = parseInt(req.query.limit) || 5; // Default page size is 5
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        quotes = quotes.slice(start, end);
+        break;
+      case 'sort':
+        sortField = req.query.sort.toLowerCase();
+        break;
+      case 'order':
+        sortOrder = req.query.order.toLowerCase();
+        break;
+      case 'id':
+        quotes = quotes.filter(q => q.id === parseInt(req.query.id));
+        break;
+      case 'author':
+        quotes = quotes.filter(q => q.author.toLowerCase() === req.query.author);
+        break;
+      case 'author_like':
+        quotes = quotes.filter(q => q.author.toLowerCase().includes(req.query.author_like));
+        break;
+      case 'author_id':
+        quotes = quotes.filter(q => q.author_id === parseInt(req.query.author_id));
+        break;
+      case 'work':
+        quotes = quotes.filter(q => q.work.toLowerCase() === req.query.work);
+        break;
+      case 'work_like':
+        const workKeywords = req.query.work_like.split(',');
+        quotes = quotes.filter(q => workKeywords.some(keyword => q.work.toLowerCase().includes(keyword.trim())));
+        break;
+      case 'work_id':
+        quotes = quotes.filter(q => q.work_id === parseInt(req.query.work_id));
+        break;
+      case 'category':
+        quotes = quotes.filter(q => q.category.toLowerCase() === req.query.category);
+        break;
+      case 'genre':
+        quotes = quotes.filter(q => q.genre.some(g => g.toLowerCase() === req.query.genre));
+        break;
+      case 'publish_date':
+        quotes = quotes.filter(q => q.publish_date === req.query.publish_date);
+        break;
+      case 'quote_length':
+        quotes = quotes.filter(q => q.quote_length === parseInt(req.query.quote_length));
+        break;
+      case 'quote_length_gte':
+        quotes = quotes.filter(q => q.quote_length >= parseInt(req.query.quote_length_gte));
+        break;
+      case 'quote_length_lte':
+        quotes = quotes.filter(q => q.quote_length <= parseInt(req.query.quote_length_lte));
+        break;
+      case 'quote_like':
+        const quoteKeywords = req.query.quote_like.split(',');
+        quotes = quotes.filter(q => quoteKeywords.some(keyword => q.quote.toLowerCase().includes(keyword.trim())));
+        break;
+      case 'sort':
+        sortField = req.query.sort.toLowerCase();
+        break;
+      case 'order':
+        sortOrder = req.query.order.toLowerCase();
+        break;
+      case 'limit':
+        limit = parseInt(req.query.limit);
+        break;
+      case 'page':
+        page = parseInt(req.query.page);
+        break;
+    }
+  });
+
+  // Apply final sorting and ordering
   quotes = quotes.sort((a, b) => {
-    if (a[sort] < b[sort]) return order === 'asc' ? -1 : 1;
-    if (a[sort] > b[sort]) return order === 'asc' ? 1 : -1;
+    if (a[sortField] < b[sortField]) return sortOrder === 'asc' ? -1 : 1;
+    if (a[sortField] > b[sortField]) return sortOrder === 'asc' ? 1 : -1;
     return 0;
   });
 
   // Apply pagination
-  const totalCount = quotes.length;
-  const totalPages = Math.ceil(totalCount / limit);
-  const start = (page - 1) * limit;
-  const end = start + limit;
-  const paginatedQuotes = quotes.slice(start, end);
+  const totalItems = quotes.length;
+  const totalPages = Math.ceil(totalItems / limit);
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  quotes = quotes.slice(startIndex, endIndex);
 
-  // Send response
-  res.json({
-    quotes: paginatedQuotes,
-    pagination: {
+
+  // Apply field selection if specified
+  if (req.query.fields) {
+    const fields = req.query.fields.split(',');
+    quotes = quotes.map(quote => {
+      const selectedFields = {};
+      fields.forEach(field => {
+        if (quote.hasOwnProperty(field)) {
+          selectedFields[field] = quote[field];
+        }
+      });
+      return selectedFields;
+    });
+  }
+
+  // Handle case where no quotes match the criteria
+  if (quotes.length === 0) {
+    return res.status(404).json({
+      code: 404,
+      error: 'not_found',
+      details: 'No quotes match the provided parameters. The resource might not exist or is unavailable.'
+    });
+  }
+
+  // Prepare the response
+  const response = {
+    data: quotes
+  };
+
+  // Add pagination object to the body only if the page parameter is used
+  if (req.query.page) {
+    response.pagination = {
       current_page: page,
       page_size: limit,
-      total_count: totalCount,
+      total_count: totalItems,
       total_pages: totalPages
-    }
-  });
+    };
+  }
+
+  res.status(200).json(response);
 });
 
-// /quotes/random endpoint
+
+// `/quotes/random` endpoint
+
 // Handles GET requests for a random quote, with optional filtering
 server.get('/quotes/random', (req, res) => {
   const allowedParams = ['author', 'category', 'genre', 'quote_like'];
@@ -157,8 +299,8 @@ server.get('/quotes/random', (req, res) => {
   if (!validateQueryParams(allowedParams, req)) {
     return res.status(400).json({
       code: 400,
-      error: 'bad_request',
-      details: `Invalid query parameter. Allowed parameters are: ${allowedParams.join(', ')}`
+      error: 'invalid_query_parameter',
+      details: `Invalid query parameter. Make sure your query parameters are correct. Allowed parameters are ${allowedParams.join(', ')}.`
     });
   }
 
@@ -179,7 +321,7 @@ server.get('/quotes/random', (req, res) => {
     return res.status(404).json({
       code: 404,
       error: 'not_found',
-      details: 'No quotes match the provided parameters. The resource might not exist or it might be unavailable.'
+      details: 'No quotes match the provided parameters. The resource might not exist or is unavailable.'
     });
   }
 
@@ -189,6 +331,7 @@ server.get('/quotes/random', (req, res) => {
 });
 
 // Error handling middleware
+
 // Catches any errors that weren't handled in the request processing
 server.use((err, req, res, next) => {
   console.error(err.stack);

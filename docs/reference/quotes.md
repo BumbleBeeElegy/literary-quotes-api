@@ -1,3 +1,9 @@
+---
+layout: page
+allowTitleToDifferFromFilename: Literary Quotes API
+type: reference
+---
+
 # Quote resource
 
 The `quote` resource contains information about the curated quote, including the literary work the quote comes from, as well as the author, category, genre(s), publication date, quote length, and source.

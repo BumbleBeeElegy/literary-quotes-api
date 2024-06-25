@@ -1,3 +1,9 @@
+---
+layout: page
+allowTitleToDifferFromFilename: Literary Quotes API
+type: reference
+---
+
 # Get All Quotes
 
 Fetch all quotes from the database. Supports pagination and sorting options.

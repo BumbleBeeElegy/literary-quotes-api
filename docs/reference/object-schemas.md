@@ -1,3 +1,9 @@
+---
+layout: page
+allowTitleToDifferFromFilename: Literary Quotes API
+type: reference
+---
+
 # Quick reference: Object schemas
 
 ## Quote Object

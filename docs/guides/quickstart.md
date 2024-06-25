@@ -1,3 +1,9 @@
+---
+layout: page
+allowTitleToDifferFromFilename: Literary Quotes API
+type: quick_start
+---
+
 # Quickstart
 
 ## Prerequisites
