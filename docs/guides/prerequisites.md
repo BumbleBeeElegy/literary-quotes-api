@@ -10,11 +10,9 @@ Before you start using the Literary Quotes API, you'll need:
 
 - **A basic understanding of RESTful APIs.** Familiarity with following RESTful API concepts is recommended:
 
-  -  Resources
-  -  Endpoints
-  -  HTTP request methods
+  -  Resources and endpoints
+  -  HTTP request methods and response codes
   -  Query parameters
-  -  HTTP response codes
   -  Response formats (JSON).
 
   If you're new to APIs, we recommend starting with some [REST API tutorials](https://restapitutorial.com/) first. You can also find a lot of other tutorials and information online to learn more about REST APIs, including resources like the [OpenAPI specification](https://swagger.io/specification/) and the [REST Guidelines](https://www.belgif.be/specification/rest/api-guide/) from the Belgian Interoperability Framework.
@@ -24,7 +22,8 @@ Before you start using the Literary Quotes API, you'll need:
   - [Postman](https://www.postman.com/): A graphical user interface (GUI) tool for making HTTP requests. It provides a user-friendly interface to construct and send requests, view responses, and organize API requests into collections.
 
 - **Access to the Literary Quotes API.** You'll need:
-  - The base URL where the API is hosted (`http://localhost:3000`)
-  - Base64-encoded authentication credentials (username and password) to access the API.
+  - Access to the [GitHub repository for the API](https://github.com/BumbleBeeElegy/literary-quotes-api)
+  - The json-server running on`http://localhost:3000`
+  - Base64-encoded authentication credentials (username:password) to test authorization.
 
-  If you'd like to experience how the API works, you can go through the tutorial to [set up a local testing environment](placeholder), then try any of the examples in the documentation.
+  To get started with the API, [set up a local testing environment](./set-up-testing-environment.md), then follow along with the examples in the documentation.

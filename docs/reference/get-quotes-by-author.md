@@ -6,94 +6,93 @@ type: reference
 
 # Get quotes by author
 
-Fetch quotes filtered by the author. You can use the `author`, `author_like`, and `author_id` query parameters. Supports sorting and pagination options.
+Fetch a list of quotes filtered by the author. You can use the `author`, `author_like`, and `author_id` query parameters. Sorting and pagination options are supported.
 
-## Method
+## Endpoint
 
-**GET**
+| Verb    | Path with parameters | Method |
+|---------|----------------------|--------|
+| **GET** | `http://localhost:3000/quotes?author` | Fetch a list of quotes by the author's name. |
+| **GET** | `http://localhost:3000/quotes?author_like` | Fetch a list of quotes by a partial match to the author's name. |
+| **GET** | `http://localhost:3000/quotes?author_id` | Fetch a list of quotes by the author's unique identifier (ID). |
 
-## URL
-
-- `http://localhost:3000/quotes?author={author_name}`
-- `http://localhost:3000/quotes?author_like={partial_author_name}`
-- `http://localhost:3000/quotes?author_id={author_id}`
 
 #### Query parameters
 
+All query parameters are optional.
+
 | Parameter     | Type    | Description |
 |---------------|---------|-------------|
-| `author`      | string  | Filter quotes by the work's title |
-| `author_like` | string  | Filter quotes by one or more keywords in the work's title |
-| `author_id`   | integer | Filter quotes by the work's ID. |
-| `_order`      | string  | Property to order results by (for example: author, work, genre). |
-| `_sort`       | string  | Sort order: `asc` (ascending) or `desc` (descending). Defaults to `asc`. |
-| `offset`      | integer | Page number for pagination. Defaults to 1. |
-| `limit`       | integer | Number of results per page. Defaults to 5. |
-
-<!--TODO: Include information about query syntax.-->
-
-### Pagination and sorting parameters
-
-#### `orderby`
-
-- **Description**: Specifies the attribute by which to order the results. Permissible attributes include `author`, `work`, `genre`, `publish_date`, and `quote_length`.
-- **Default**: `author`
-
-#### `sort`
-
-- **Description**: Specifies the sort order of the results. Permissible values are `asc` (ascending) and `desc` (descending).
-- **Default**: `asc`
+| `author`      | string  | Filter quotes by the author's name |
+| `author_like` | string  | Filter quotes by a partial match to the author's name. |
+| `author_id`   | integer | Filter quotes by the author's ID. |
+| `fields`      | string  | Comma-separated list of fields to specify which fields to include in the response. If not specified, all fields are returned. |
+| `sort`        | string  | The field to sort the results by. The default sort field is `id`. |
+| `order`       | string  | The field to order results by ascending (`asc) or descending (`desc`). The default order is ascending. |
+| `limit`       | integer | Number of items per page. The default is 5 items per page. |
+| `page`        | integer | Page number for pagination. The default is page 1. |
 
 ## Requests
 
 ### Request headers
 
-| Header Name      | Description                                    |
-|------------------|------------------------------------------------|
-| Authorization    | Basic base64-encoded username:password.        |
-
-<!--TODO: Include accept json header.-->
+| Header Name     | Value           | Required        | Description     |
+|-----------------|-----------------|-----------------|-----------------|
+| `Authorization` | `Basic <your_credentials>` | No | Allows you to test authentication-related behaviour and errors. Required by default but can be bypassed. |
+| `X-Bypass-Auth` | Value: `true`. | No | Allows you to bypass authorization. |
+| `Accept`        | `application/json` | No | Indicates what kind of response the client can accept from the server. |
 
 ### Request body
 
-The GET request doesn't include a body.
+None.
 
-### Example request
+### Example requests
 
-```bash
-curl -X GET "https://literary-quotes.com/api/v1/quotes?author=Ralph%20Waldo%20Emerson&page=1&limit=5&orderby=work&sort=asc" -H "Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ="
+Get quotes by the title of the work. Spaces in the author's name are encoded with the `+` character:
+
+```shell
+curl "http://localhost:3000/quotes?author=Charlotte+Bronte" \
+  -H "Authorization: Basic <your_encrypted_credentials>" \
+  -H "Accept: application/json"
+```
+
+Get quotes by a the author's first name, last name, or a partial match:
+
+```shell
+curl "http://localhost:3000/quotes?author_like=Bronte" \
+  -H "Authorization: Basic <your_encrypted_credentials>" \
+  -H "Accept: application/json"
+```
+
+Get quotes by the author's ID:
+
+```shell
+curl "http://localhost:3000/quotes?author_id=12" \
+  -H "Authorization: Basic <your_encrypted_credentials>" \
+  -H "Accept: application/json"
 ```
 
 ## Response
 
-**`200`** Returns an array of Quote objects.
-**`400`**
-**`401`**
-**`403`**
-**`404`**
-**`500`**
-
-A `200` response returns a Quote object or an array of Quote objects that contain the quote(s) specified in the request.
-
-<!--TODO: Revisit YAML file. Maybe a QuoteItems/QuotesData object should be added if I'm wanting to return more than just the array of objects (like pagination info, etc.). Do some testing in Postman with different options.-->
+A successful response returns a `QuotesResponse` object wrapping a list of quote items and pagination information.
 
 ### Example response
 
-<!--TODO: Vary the example responses. Add info about how to return specific fields instead of the entire quote object each time?-->
-
 ```json
 {
-  "status_code": 200,
-  "data": [
+  "items": [
     {
-      "id": 1,
-      "author": "Ralph Waldo Emerson",
-      "work": "The Essays of Ralph Waldo Emerson",
-      "genre": "Essays",
-      "publish_date": "1841",
-      "quote_length": 119,
-      "source": "https://www.gutenberg.org/ebooks/2945",
-      "quote": "Life is a train of moods like a string of beads..."
+      "id": 12,
+      "author": "Charlotte Bronte",
+      "author_id": 12,
+      "work": "Jane Eyre",
+      "work_id": 1260,
+      "category": "Fiction",
+      "genre": ["Romance", "Women's"],
+      "publish_date": "1847-10-16",
+      "quote_length": 87,
+      "source": "https://www.gutenberg.org/ebooks/1260",
+      "quote": "I am no bird; and no net ensnares me: I am a free human being with an independent will."
     },
     // Additional quotes...
   ],
@@ -108,11 +107,12 @@ A `200` response returns a Quote object or an array of Quote objects that contai
 
 ### Return status
 
-| Status Code | Message                | Description                                                                                   |
-|-------------|------------------------|-----------------------------------------------------------------------------------------------|
-| 200         | OK                     | The request was successful and the server responded with the requested data.                  |
-| 400         | Bad Request            | The server could not understand the request due to invalid syntax.                            |
-| 401         | Unauthorized           | Authentication is required and has failed or has not yet been provided.                       |
-| 403         | Forbidden              | The server understood the request but refuses to authorize it.                                |
-| 404         | Not Found              | The requested resource could not be found on the server.                                      |
-| 500         | Internal Server Error  | The server encountered an unexpected condition that prevented it from fulfilling the request. |
+| Code  | Status | Error | Details |
+|-------|----------------|---------|
+| `200` | `OK` | Indicates the request was successful and the response body contains the requested data. |
+| `400` | `bad_request` | The request could not be understood. This could be due to incorrect syntax or an invalid parameter. Check your query string for errors. |
+| `401` | `unauthorized` | Authentication failed. Make sure your request includes the Authorization header and that you're using the correct Base64-encoded username:password. |
+| `401` | `invalid_credentials` | Invalid credential format. Make sure your credentials are in "username:password" format before you encode them. |
+| `404` | `not_found` | No quotes match the provided parameters. The resource might not exist or is unavailable. |
+| `429` | `too_many_requests` | You have exceeded the maximum number of requests. The limit will reset in 60 seconds and you can try again. |
+| `500` | `internal_server_error`  | An unexpected error occurred. Please try again later. If the problem persists, contact Support.|
