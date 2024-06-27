@@ -7,4 +7,4 @@ The Literary Quotes REST API makes it easy to integrate a curated database of li
 
 ## Documentation
 
-To get started with the API, see the [Literary Quotes API documentation](https://bumblebeeelegy.github.io/literary-quotes-api/docs/index).
+To get started with the API, see the [Literary Quotes API documentation](https://bumblebeeelegy.github.io/literary-quotes-api/).
