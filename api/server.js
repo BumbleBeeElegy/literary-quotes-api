@@ -3,10 +3,6 @@ const server = jsonServer.create();
 const router = jsonServer.router('literary-quotes-db.json');
 const middlewares = jsonServer.defaults();
 
-//NOTE: Need to add genre options + fiction/nonfiction
-//NOTE: Need to add 'fields' paramater to file
-
-
 // Apply default json-server middlewares
 server.use(middlewares);
 
