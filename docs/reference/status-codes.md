@@ -1,3 +1,9 @@
+---
+layout: page
+allowTitleToDifferFromFilename: Literary Quotes API
+type: reference
+---
+
 # Quick Reference: Status codes
 
 | Status Code | Message                | Description                                                                                   |
