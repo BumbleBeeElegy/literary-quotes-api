@@ -8,10 +8,6 @@ allowTitleToDifferFromFilename: Literary Quotes API
 
 Get literary quotes from a curated public domain database built on Project Gutenberg.
 
-<!--TODO: Check all docs to make sure curl examples use double quotes.-->
-<!--TODO: Check all docs to make sure new and updated content has been added across all relevant docs.-->
-<!--TODO: Check all links once documentation set is complete.-->
-
 ## Product overview
 
 * [Introduction to the API](./overview/introduction.md)
@@ -25,7 +21,7 @@ Get literary quotes from a curated public domain database built on Project Guten
 
 ## API fundamentals
 
-* [Requests](./guides/requests.md)<!--Explain concepts like case sensitivity, testing setup, etc.-->
+* Requests
   * [Endpoints](./guides/endpoints.md)
   * [Request methods](./guides/request-methods.md)
   * [Authorization](./guides/authorization.md)
@@ -60,6 +56,7 @@ Get literary quotes from a curated public domain database built on Project Guten
     * [GET quotes by keyword](./reference/get-quotes-by-keyword.md)
     * [GET a random quote](./reference/get-random-quote.md)
 * [cURL examples](./reference/curl-examples.md)
+* [Postman examples](./reference/postman-examples.md)
 * [Response codes and errors](./reference/response-codes-errors.md)
 * Quick references
   * [Object schemas](./reference/object-schemas.md)
